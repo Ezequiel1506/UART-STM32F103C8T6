@@ -32,14 +32,11 @@
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 
-uint8_t raw;
-uint8_t msg[10];
-char msg2[2];
-char resp[15];
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define MAX_AT 10
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -53,7 +50,10 @@ HAL_StatusTypeDef bool_HAL;
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
-
+uint8_t rx_msg[MAX_AT];
+uint8_t tx_msg[MAX_AT];
+char msg = "AT";
+char resp[MAX_AT];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -141,14 +141,13 @@ int main(void)
 
 		  HAL_Delay(250);
 	  }*/
-
-	 sprintf(msg2, "11");
-	 bool_HAL=HAL_UART_Transmit(&huart1, (uint8_t*)msg2, strlen(msg2), 1000);
+    strcpy(tx_msg, msg);
+	  bool_HAL=HAL_UART_Transmit(&huart1, (uint8_t*)tx_msg, strlen(tx_msg), 1000);
 
 	 //bool_HAL=HAL_UART_Transmit(&huart1,msg2, 2, 1000);
 	 HAL_Delay(100);
-	 HAL_UART_Receive(&huart1,msg, 10, 1000);
-	 sprintf(resp,msg);
+	 HAL_UART_Receive(&huart1,rx_msg, MAX_AT, 1000);
+	 strcpy(resp,(const char *)rx_msg);
 	 lcd_put_cur(0, 0);
 	 lcd_send_string(resp);
 	 HAL_Delay(300);
@@ -174,7 +173,7 @@ int main(void)
 	  HAL_Delay(100);
 
 	  lcd_put_cur(1, 0);
-	  lcd_send_string(msg2);
+	  lcd_send_string(msg);
 	 // lcd_put_cur(1, 0);
 	 // lcd_send_string(msg);
 	  HAL_Delay(1000);
